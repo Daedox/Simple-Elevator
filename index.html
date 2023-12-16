@@ -1,0 +1,74 @@
+<html>
+<head>
+    <title>Simple Elevator</title>
+    <style>
+        .shaft {
+            width: 54px;
+            height: 600px;
+            border: 2px solid black;
+            position: relative;
+            margin: 20px;
+        }
+
+        .floor {
+            height: 33.3%;
+            border-bottom: 1px solid grey;
+        }
+
+        .lift {
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            position: absolute;
+            margin-left: 2px;
+            bottom: 0;
+        }
+    </style>
+ <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="shaft">
+        <div class="floor"></div>
+        <div class="floor"></div>
+        <div class="floor"></div>
+        <div class="lift"></div>
+    </div>
+    <input type="number" id="currentFloor" value="0" min="0" max="2" step="1">
+    <input type="button" id="floor2" value="2nd Floor"></input>
+    <input type="button" id="floor1" value="1st Floor"></input>
+    <input type="button" id="floor0" value="Ground Floor"></input>
+    
+   
+    <script>
+        function move2Floor(targetFloor) {
+            var currentFloor = parseInt($('#currentFloor').val());
+            var targetBottom = targetFloor * 33.3;
+
+            var keyframes = `
+                @keyframes move {
+                    from { bottom: ${currentFloor * 33.3}%; }
+                    to { bottom: ${targetBottom}%; }
+                }
+            `;
+
+            var styleSheet = document.createElement("style");
+            styleSheet.type = "text/css";
+            styleSheet.innerText = keyframes;
+            document.head.appendChild(styleSheet);
+
+            $('.lift').css('animation', 'none');
+            setTimeout(function() {
+                $('.lift').css('animation', 'move 5s');
+                $('.lift').one('animationend', function() {
+                    $(this).css('bottom', `${targetBottom}%`);
+                    $('#currentFloor').val(targetFloor);
+                });
+            }, 10);
+        }
+
+        $("#floor0").click(function() { move2Floor(0); });
+        $("#floor1").click(function() { move2Floor(1); });
+        $("#floor2").click(function() { move2Floor(2); });
+    </script>
+</body>
+</html>
